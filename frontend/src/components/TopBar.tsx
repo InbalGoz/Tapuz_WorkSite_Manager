@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 const pages = [
   { label: "אתרים", path: "/sites" },
   { label: "רשימת עובדים", path: "/employees" },
-  { label: "דיווח שעות עבודה", path: "/reports" },
+  { label: "דיווח שעות עבודה", path: "/workhours" },
 ];
 
 const TopBar: React.FC = () => {

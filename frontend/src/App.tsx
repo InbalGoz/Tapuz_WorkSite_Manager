@@ -1,11 +1,14 @@
 import React from "react";
 //import { Routes, Route, Navigate } from "react-router-dom";
 //import Login from "./pages/auth/Login";
-import TopBar from "./components/TopBar";
+import Sites from "./pages/Sites";
+import { Route, Routes } from "react-router-dom";
 //import Register from "./pages/auth/Register";
 //import Dashboard from "./pages/Dashboard";
 //import SitesList from "./pages/SitesList";
-//import SiteDetails from "./pages/SiteDetails";
+import SiteDetails from "./pages/SiteDetails";
+import TopBar from "./components/TopBar";
+import WorkHours from "./pages/WorkHours";
 //import NewSite from "./pages/NewSite";
 
 const App: React.FC = () => {
@@ -14,6 +17,11 @@ const App: React.FC = () => {
   return (
     <>
       <TopBar />
+      <Routes>
+        <Route path="/sites" element={<Sites />} />
+        <Route path="/site/:id" element={<SiteDetails />} />
+        <Route path="/workhours" element={<WorkHours />} />
+      </Routes>
     </>
   );
 };
