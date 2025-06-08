@@ -2,7 +2,7 @@
   "name": "dev",
   "port": 3000,
   "dbHost": "localhost",
-  "dbName": ",
+  "dbName": "",
   "dbPort": 5432,
   "dbUser": "postgres",
   "dbPassword": "",
