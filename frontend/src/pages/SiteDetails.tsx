@@ -12,6 +12,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Container,
 } from "@mui/material";
 
 const site = {
@@ -45,125 +46,158 @@ function SiteDetails() {
     setImageUrl("");
   };
   return (
-    <Box sx={{ mt: 6, px: 9, direction: "rtl" }}>
-      {/* כותרת */}
-      <Typography
-        variant="h4"
-        sx={{ mb: 4, fontWeight: 600, textAlign: "left" }}
-      >
-        {site.name}
-      </Typography>
-
-      {/* טופס + תמונה */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          justifyContent: "space-between",
-          gap: 4,
-          mb: 6,
-        }}
-      >
-        {/* טופס */}
-        <Box
+    <>
+      <Container maxWidth="lg" sx={{ mt: 6, direction: "rtl" }}>
+        {/* כותרת */}
+        <Typography
+          variant="h4"
           sx={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            maxWidth: 500,
+            mb: 4,
+            fontWeight: 600,
+            textAlign: { xs: "center", md: "left" },
           }}
         >
-          <FormControl fullWidth>
-            <InputLabel id="project-step-label">שלב בפרויקט</InputLabel>
-            <Select
-              labelId="project-step-label"
-              value={step}
-              label="שלב בפרויקט"
-              onChange={(e) => setStep(e.target.value)}
+          {site.name}
+        </Typography>
+
+        {/* טופס + תמונה */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", md: "row" },
+            justifyContent: "space-between",
+            gap: 3,
+            mb: 4,
+          }}
+        >
+          {/* טופס */}
+          <Box
+            component="form"
+            sx={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              width: { xs: "100%", md: "60%" },
+              maxWidth: 500,
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <FormControl fullWidth variant="outlined">
+              <InputLabel id="project-step-label">שלב בפרויקט</InputLabel>
+              <Select
+                labelId="project-step-label"
+                value={step}
+                label="שלב בפרויקט"
+                onChange={(e) => setStep(e.target.value)}
+              >
+                <MenuItem value="חפירה">חפירה</MenuItem>
+                <MenuItem value="יסודות">יסודות</MenuItem>
+                <MenuItem value="שלד">שלד</MenuItem>
+                <MenuItem value="גמרים">גמרים</MenuItem>
+                <MenuItem value="סיום">סיום</MenuItem>
+              </Select>
+            </FormControl>
+
+            <TextField
+              label="הערות"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              fullWidth
+              multiline
+              rows={3}
+            />
+
+            <TextField
+              label="קישור לתמונה"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              fullWidth
+            />
+
+            <Button
+              variant="contained"
+              onClick={handleAddUpdate}
+              sx={{ mt: 1 }}
             >
-              <MenuItem value="חפירה">חפירה</MenuItem>
-              <MenuItem value="יסודות">יסודות</MenuItem>
-              <MenuItem value="שלד">שלד</MenuItem>
-              <MenuItem value="גמרים">גמרים</MenuItem>
-              <MenuItem value="סיום">סיום</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            label="הערות"
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            fullWidth
-            multiline
-            rows={3}
-          />
-          <TextField
-            label="קישור לתמונה"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-            fullWidth
-          />
-          <Button variant="contained" onClick={handleAddUpdate}>
-            הוסף עדכון
-          </Button>
+              הוסף עדכון
+            </Button>
+          </Box>
+
+          {/* תמונה + מיקום */}
+          <Card
+            sx={{
+              width: { xs: "100%", sm: "80%", md: 360 },
+              alignSelf: "flex-start",
+            }}
+          >
+            <CardMedia
+              component="img"
+              height="200"
+              image={site.imageUrl || "/placeholder.png"}
+              alt="תמונת אתר"
+            />
+            <CardContent>
+              <Typography variant="subtitle1" color="text.secondary">
+                מיקום: {site.desc}
+              </Typography>
+            </CardContent>
+          </Card>
         </Box>
 
-        {/* תמונה + מיקום מימין */}
-        <Card sx={{ width: 360 }}>
-          <CardMedia
-            component="img"
-            height="200"
-            image={site.imageUrl}
-            alt="תמונת אתר"
-          />
-          <CardContent>
-            <Typography variant="subtitle1" color="text.secondary">
-              מיקום: {site.desc}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Box>
+        <Divider sx={{ mb: 3 }} />
 
-      <Divider sx={{ mb: 4 }} />
+        {/* כותרת עדכונים */}
+        <Typography
+          variant="h5"
+          sx={{
+            mb: 2,
+            fontWeight: 500,
+            textAlign: { xs: "center", md: "left" },
+          }}
+        >
+          עדכונים שבוצעו
+        </Typography>
 
-      {/* כותרת עדכונים */}
-      <Typography
-        variant="h5"
-        sx={{ mb: 2, fontWeight: 500, textAlign: "left" }}
-      >
-        עדכונים שבוצעו
-      </Typography>
-
-      {/* רשימת עדכונים */}
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        {updates.map((u, i) => (
-          <Card
-            key={i}
-            sx={{ p: 2, backgroundColor: "#f9f9f9", textAlign: "left" }}
-          >
-            <Typography variant="subtitle1" fontWeight={600}>
-              שלב: {u.step}
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              {u.note}
-            </Typography>
-            {u.imageUrl && (
-              <Box
-                component="img"
-                src={u.imageUrl}
-                alt={`עדכון ${i}`}
-                sx={{
-                  maxWidth: "100%",
-                  borderRadius: 2,
-                  mt: 1,
-                  boxShadow: 1,
-                }}
-              />
-            )}
-          </Card>
-        ))}
-      </Box>
-    </Box>
+        {/* רשימת עדכונים */}
+        <Box
+          sx={{
+            display: "grid",
+            gap: 2,
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "1fr 1fr",
+              md: "1fr 1fr 1fr",
+            },
+          }}
+        >
+          {updates.map((u, i) => (
+            <Card key={i} sx={{ p: 2, backgroundColor: "#f9f9f9" }}>
+              <Typography variant="subtitle1" fontWeight={600}>
+                שלב: {u.step}
+              </Typography>
+              <Typography variant="body2" sx={{ mb: 1 }}>
+                {u.note}
+              </Typography>
+              {u.imageUrl && (
+                <Box
+                  component="img"
+                  src={u.imageUrl}
+                  alt={`עדכון ${i}`}
+                  sx={{
+                    maxWidth: "100%",
+                    borderRadius: 2,
+                    mt: 1,
+                    boxShadow: 1,
+                  }}
+                />
+              )}
+            </Card>
+          ))}
+        </Box>
+      </Container>
+    </>
   );
 }
 
