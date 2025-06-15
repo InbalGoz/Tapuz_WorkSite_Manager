@@ -1,52 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SitesList from "../components/SitesList";
 import TopBar from "../components/TopBar";
 import { Container, Typography, Box } from "@mui/material";
 import SiteCard from "../components/SiteCard";
 import NewSiteForm from "../components/NewSiteForm";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { loadAllSites } from "../features/sites/sitesSlice";
+import { selectAllSites } from "../features/sites/sitesSelectors";
 
-const sites = [
-  {
-    id: 1,
-    name: "אתר בנייה א׳",
-    desc: "רחוב הדגמה 10, תל אביב",
-    imageUrl: "",
-    isFinish: true,
-  },
-  {
-    id: 2,
-    name: "אתר בנייה ב׳",
-    desc: "רחוב הדגמה 20, ירושלים",
-    imageUrl: "",
-    isFinish: true,
-  },
-  {
-    id: 3,
-    name: "אתר בנייה ג׳",
-    desc: "רחוב הדגמה 30, חיפה",
-    imageUrl: "",
-    isFinish: false,
-  },
-  {
-    id: 4,
-    name: "אתר בנייה ג׳",
-    desc: "רחוב הדגמה 30, חיפה",
-    imageUrl: "",
-    isFinish: true,
-  },
-  {
-    id: 5,
-    name: "אתר בנייה ג׳",
-    desc: "רחוב הדגמה 30, חיפה",
-    imageUrl: "",
-    isFinish: false,
-  },
-];
 function Sites() {
+  const sites = useAppSelector(selectAllSites);
   //לייבא את רשימת האתרים
-  const activeSites = sites.filter((site) => site.isFinish);
-  const inactiveSites = sites.filter((site) => !site.isFinish);
+  const activeSites = sites.filter((site) => site.isFinished);
+  const inactiveSites = sites.filter((site) => !site.isFinished);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(loadAllSites());
+  }, [dispatch]);
 
   return (
     <>
@@ -54,11 +26,15 @@ function Sites() {
       <Container>
         <Box>
           <SiteCard
+            /*מייצג אתר חדש? */
             site={{
               id: 5,
               name: "אתר בנייה ג׳",
-              desc: "רחוב הדגמה 30, חיפה",
+              address: "string",
               imageUrl: "",
+              description: "רחוב הדגמה 30, חיפה",
+              isFinished: false,
+              createdAt: new Date(),
             }}
             isNew={true}
             onClick={() => setDialogOpen(true)}

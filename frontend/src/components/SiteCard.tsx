@@ -10,13 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import siteImage from "../assets/defultSite.avif";
 import AddIcon from "@mui/icons-material/Add";
-
-export interface Site {
-  id: number;
-  name: string;
-  desc: string;
-  imageUrl: string;
-}
+import type { Site } from "../models/site";
 
 // 2. נגדיר את הפרופס של הקומפוננטה באמצעות הממשק Site
 interface SiteCardProps {
@@ -78,7 +72,7 @@ function SiteCard({ site, isNew = false, onClick }: SiteCardProps) {
           {site.name}
         </Typography>
         <Typography variant="body2" sx={{ color: "text.secodary" }}>
-          {site.desc}
+          {site.description}
         </Typography>
       </CardContent>
       <CardActions>

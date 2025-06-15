@@ -1,6 +1,6 @@
 import { Container, Typography, Box, Card } from "@mui/material";
 import SiteCard from "./SiteCard";
-import type { Site } from "./SiteCard"; //כשמייבאים טיפוסים צריך להגיד שזה TYPE
+import type { Site } from "../models/site"; //כשמייבאים טיפוסים צריך להגיד שזה TYPE
 //import siteImage from "../assets/defultSite.avif";
 
 interface SitesListProps {

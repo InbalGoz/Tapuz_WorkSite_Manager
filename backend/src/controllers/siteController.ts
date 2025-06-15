@@ -11,6 +11,7 @@ import {
 export async function listSites(req: Request, res: Response) {
   try {
     const sites = await getAllSites();
+    console.log(sites);
     res.json(sites);
   } catch (err: any) {
     res.status(500).json({ message: err.message || "Server error" });

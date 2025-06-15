@@ -7,6 +7,8 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
+import { Provider } from "react-redux";
+import { store } from "./app/store";
 
 // יוצרים cache של אמושן (Emotion) עם תמיכה ב־RTL
 const cacheRtl = createCache({
@@ -28,13 +30,15 @@ document.body.dir = "rtl"; // חובה: קובע שה־body יהיה RTL
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <CacheProvider value={cacheRtl}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
-      </ThemeProvider>
-    </CacheProvider>
+    <Provider store={store}>
+      <CacheProvider value={cacheRtl}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </ThemeProvider>
+      </CacheProvider>
+    </Provider>
   </React.StrictMode>
 );
