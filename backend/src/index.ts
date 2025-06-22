@@ -5,7 +5,7 @@ import mainRouter from "./routes/mainRoutes";
 import cors from "cors";
 
 dotenv.config(); //ALLOWS READING THE .ENV FILE AND USE ITS VARIBELS IN THE PROCESS
-const PORT = process.env.PORT || 5000; //
+const PORT = process.env.PORT || 3000; //
 
 async function server() {
   try {
@@ -19,11 +19,17 @@ async function server() {
   app.use(express.json());
   app.use(
     cors({
-      origin: "http://localhost:5173",
+      origin: "http://localhost:5000",
+      methods: ["GET", "POST", "PUT", "DELETE"],
+    })
+  );
+  /* app.use(
+    cors({
+      origin: "http://localhost:5000",
       methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
       credentials: true, // אם את שולחת עוגיות או auth
     })
-  );
+  );*/
   app.use(mainRouter); //defines the routes
 
   app.listen(PORT, () => {

@@ -10,7 +10,8 @@ const poolConfig: PoolConfig = {
   database: configDev.dbName,
   password: configDev.dbPassword,
   port: configDev.dbPort,
-  ssl: { rejectUnauthorized: false }, //מאפשר חיבור מוצפן בלי לבדוק תעודת שרת
+  //ssl: { rejectUnauthorized: false }, //מאפשר חיבור מוצפן בלי לבדוק תעודת שרת
+  ssl: false,
 };
 
 //יצירת מחלקה עם מתודה שמבצעת אתחול לחיבור

@@ -7,8 +7,9 @@ import { Route, Routes } from "react-router-dom";
 //import Dashboard from "./pages/Dashboard";
 //import SitesList from "./pages/SitesList";
 import SiteDetails from "./pages/SiteDetails";
-import TopBar from "./components/TopBar";
+//import TopBar from "./components/TopBar";
 import WorkHours from "./pages/WorkHours";
+import LandingPage from "./pages/LandingPage";
 //import NewSite from "./pages/NewSite";
 
 const App: React.FC = () => {
@@ -16,8 +17,8 @@ const App: React.FC = () => {
 
   return (
     <>
-      <TopBar />
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/sites" element={<Sites />} />
         <Route path="/site/:id" element={<SiteDetails />} />
         <Route path="/workhours" element={<WorkHours />} />

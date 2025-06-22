@@ -17,6 +17,7 @@ const initialState: SitesState = {
 
 export const loadAllSites = createAsyncThunk("sites/getAllSites", async () => {
   const sites = await fetchAllSites();
+  console.log(sites);
   return sites; // TypeScript יגדיר את payload כ־Site[] אוטומטית
 });
 
@@ -33,6 +34,7 @@ const sitesSlice = createSlice({
       .addCase(
         loadAllSites.fulfilled,
         (state, action: PayloadAction<Site[]>) => {
+          console.log(action.payload);
           state.all_sites = action.payload;
           state.loading = false;
         }

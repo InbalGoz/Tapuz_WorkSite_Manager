@@ -6,27 +6,41 @@ import SiteCard from "../components/SiteCard";
 import NewSiteForm from "../components/NewSiteForm";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { loadAllSites } from "../features/sites/sitesSlice";
-import { selectAllSites } from "../features/sites/sitesSelectors";
+import {
+  //selectAllSites,
+  selectActiveSites,
+  selectFinishedSites,
+} from "../features/sites/sitesSelectors";
 
 function Sites() {
-  const sites = useAppSelector(selectAllSites);
-  //לייבא את רשימת האתרים
-  const activeSites = sites.filter((site) => site.isFinished);
-  const inactiveSites = sites.filter((site) => !site.isFinished);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  //const sites = useAppSelector(selectAllSites);
+  const activeSites = useAppSelector(selectActiveSites);
+  const finishedSites = useAppSelector(selectFinishedSites);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(loadAllSites());
   }, [dispatch]);
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  console.log("activeSites", activeSites);
+  console.log("sites:", activeSites);
+  activeSites.forEach((site) => {
+    console.log(
+      `id: ${site.id}, isFinished:`,
+      site.isFinished,
+      typeof site.isFinished
+    );
+  });
+  console.log("notActiveSites", finishedSites);
   return (
     <>
       <TopBar />
       <Container>
         <Box>
           <SiteCard
-            /*מייצג אתר חדש? */
+            /*אתר מדומה בשביל בשביל הכרטיס */
             site={{
               id: 5,
               name: "אתר בנייה ג׳",
@@ -87,7 +101,7 @@ function Sites() {
           />
         </Box>
 
-        <SitesList filteredSites={inactiveSites} />
+        <SitesList filteredSites={finishedSites} />
       </Container>
     </>
   );
