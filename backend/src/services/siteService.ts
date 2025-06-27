@@ -72,8 +72,8 @@ export async function updateSite(id: number, data: Site): Promise<Site> {
     const result = await DBService.pool.query(sql, values);
     return result.rows[0] as Site;
   } catch (error) {
-    console.error("DB Error in createSite:", error);
-    throw new Error("Failed to create site");
+    console.error("DB Error in updateSite:", error);
+    throw new Error("Failed to update site");
   }
 }
 
@@ -83,7 +83,7 @@ export async function deleteSite(id: number): Promise<Site> {
     const result = await DBService.pool.query(sql, [id]);
     return result.rows[0] as Site;
   } catch (error) {
-    console.error("DB Error in createSite:", error);
-    throw new Error("Failed to create site");
+    console.error("DB Error in deleteSite:", error);
+    throw new Error("Failed to delete site");
   }
 }
