@@ -41,7 +41,7 @@ export async function createSite(data: Site): Promise<Site> {
   const { name, address, imageUrl, description, isFinished } = data;
   const sql = `
     INSERT INTO sites (name, address, image_url, description, is_finished)
-    VALUES ($1, $2, $3, $4, $5)
+    VALUES ($1, $2, $3, $4, $5, NOW())
     RETURNING 
       id, name, address, image_url AS "imageUrl", 
       description, is_finished AS "isFinished", 

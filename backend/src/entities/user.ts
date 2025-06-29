@@ -1,4 +1,4 @@
-export interface Employee {
+export interface User {
   id: Number;
   username: string;
   password_hash: string;

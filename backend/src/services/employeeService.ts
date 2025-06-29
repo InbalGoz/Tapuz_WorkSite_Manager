@@ -47,7 +47,7 @@ export async function createEmployee(data: Employee): Promise<Employee> {
   } = data;
   const sql = `
     INSERT INTO employees (firstName, lastName, idNumber, visaNumber, hasVisa, hasVehicle, phoneNumber)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
     RETURNING 
       id,
   first_name AS "firstName",
