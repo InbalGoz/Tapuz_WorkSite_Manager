@@ -7,7 +7,7 @@ import {
   deleteSiteStage,
 } from "../services/siteStageService";
 
-export async function getlistOfSiteStage(req: Request, res: Response) {
+export async function getListOfSiteStage(req: Request, res: Response) {
   const id = Number(req.params.id); //the site id
   try {
     const siteStages = await getAllsiteStages(id);
