@@ -24,16 +24,16 @@ function Sites() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  console.log("activeSites", activeSites);
-  console.log("sites:", activeSites);
-  activeSites.forEach((site) => {
+  //console.log("activeSites", activeSites);
+  //console.log("sites:", activeSites);
+  /*activeSites.forEach((site) => {
     console.log(
       `id: ${site.id}, isFinished:`,
       site.isFinished,
       typeof site.isFinished
     );
-  });
-  console.log("notActiveSites", finishedSites);
+  });*/
+  //console.log("notActiveSites", finishedSites);
   return (
     <>
       <TopBar />

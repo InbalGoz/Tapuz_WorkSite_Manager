@@ -40,7 +40,7 @@ export async function getSiteById(id: number): Promise<Site> {
 export async function createSite(data: Site): Promise<Site> {
   const { name, address, imageUrl, description, isFinished } = data;
   const sql = `
-    INSERT INTO sites (name, address, image_url, description, is_finished)
+    INSERT INTO sites (name, address, image_url, description, is_finished, created_at)
     VALUES ($1, $2, $3, $4, $5, NOW())
     RETURNING 
       id, name, address, image_url AS "imageUrl", 

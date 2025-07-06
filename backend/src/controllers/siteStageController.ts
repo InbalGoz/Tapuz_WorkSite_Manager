@@ -11,6 +11,7 @@ export async function getListOfSiteStage(req: Request, res: Response) {
   const id = Number(req.params.id); //the site id
   try {
     const siteStages = await getAllsiteStages(id);
+    console.log(siteStages);
     ResService.handleSuccess(res, siteStages);
   } catch (err: any) {
     ResService.handleErr(res, err);

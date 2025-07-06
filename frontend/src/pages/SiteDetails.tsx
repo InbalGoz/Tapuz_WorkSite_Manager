@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import type { SelectChangeEvent } from "@mui/material";
 import {
   Box,
   Typography,
@@ -14,6 +15,26 @@ import {
   MenuItem,
   Container,
 } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { loadSiteById } from "../features/sites/sitesSlice";
+import { selectSelectedSite } from "../features/sites/sitesSelectors";
+import { useParams } from "react-router-dom";
+import TopBar from "../components/TopBar";
+import { loadAllStages } from "../features/stages/stageSlice";
+import { selectAllStages } from "../features/stages/stageSelector";
+import {
+  selectAllSitesStages,
+  selectSiteStagesBySiteId,
+} from "../features/siteStages/siteStagesSelector";
+import {
+  loadAllSiteStages,
+  deleteSiteStageThunk,
+  updateSiteStageThunk,
+  createNewSiteStage,
+} from "../features/siteStages/siteStagesSlice";
+import type { SiteStage } from "../models/siteStage";
+import { Snackbar, Alert } from "@mui/material";
+import defultImage from "../assets/defultSite.avif";
 
 const site = {
   id: 1,
@@ -24,50 +45,107 @@ const site = {
 };
 
 function SiteDetails() {
-  //const { id } = useParams(); // זה ייתן לך את ה-id מה-URL
-  //לפלטר את האתר הרלוונטי מהרשימה, לבקש רשימת אתרים
-  const [step, setStep] = useState("");
-  const [note, setNote] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [updates, setUpdates] = useState([
-    //לייבא את הרשימה לפי אתר
-    {
-      step: "חפירה",
-      note: "בוצעה חפירה ראשונית",
-      imageUrl: "",
-    },
-  ]);
-
-  const handleAddUpdate = () => {
-    const newUpdate = { step, note, imageUrl };
-    setUpdates([newUpdate, ...updates]);
-    setStep("");
-    setNote("");
-    setImageUrl("");
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: "success" | "error";
+  }>({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  const showSnackbar = (message: string, severity: "success" | "error") => {
+    setSnackbar({ open: true, message, severity });
   };
+  const { id } = useParams<{ id: string }>();
+  const numericSiteId = Number(id);
+  const dispatch = useAppDispatch();
+  const currentSite = useAppSelector(selectSelectedSite);
+  const listAllStages = useAppSelector(selectAllStages);
+  //1.4 get the stages but with a filter by id
+  const filteredSiteStages = useAppSelector(
+    selectSiteStagesBySiteId(numericSiteId)
+  );
+
+  const [siteStageFormData, setSiteStageFormData] = useState({
+    siteId: numericSiteId,
+    stageId: 0,
+    notes: "",
+    imageUrl: "",
+  });
+
+  useEffect(() => {
+    dispatch(loadSiteById(numericSiteId));
+    dispatch(loadAllStages());
+    dispatch(loadAllSiteStages(numericSiteId));
+  }, [dispatch]);
+
+  const handleSelectChange = (e: SelectChangeEvent<number>) => {
+    const value = Number(e.target.value);
+    setSiteStageFormData((prev) => ({
+      ...prev,
+      stageId: value,
+    }));
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSiteStageFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleAddUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!siteStageFormData.stageId || !siteStageFormData.notes) {
+      showSnackbar("נא למלא את כל שדות החובה", "error");
+      return;
+    }
+    try {
+      await dispatch(
+        createNewSiteStage(siteStageFormData as SiteStage)
+      ).unwrap();
+      showSnackbar("העדכון התווסף בהצלחה", "success");
+      setSiteStageFormData({
+        siteId: numericSiteId,
+        stageId: 0,
+        notes: "",
+        imageUrl: "",
+      });
+    } catch (err: any) {
+      showSnackbar("אירעה שגיאה בהוספת השלב", "error");
+    }
+  };
+
+  //maxWidth="lg"
   return (
     <>
-      <Container maxWidth="lg" sx={{ mt: 6, direction: "rtl" }}>
-        {/* כותרת */}
-        <Typography
-          variant="h4"
-          sx={{
-            mb: 4,
-            fontWeight: 600,
-            textAlign: { xs: "center", md: "left" },
-          }}
-        >
-          {site.name}
-        </Typography>
+      <TopBar />
+      <Container maxWidth="xl" sx={{ mt: 6 }} dir="rtl">
+        {/* כותרת האתר */}
+        {currentSite && (
+          <Typography
+            variant="h4"
+            sx={{
+              mb: 4,
+              fontWeight: 600,
+              textAlign: { xs: "left", md: "center" },
+            }}
+          >
+            {currentSite?.name}
+          </Typography>
+        )}
 
-        {/* טופס + תמונה */}
+        {/* טופס עדכון + תמונה */}
         <Box
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
+            alignItems: "flex-start",
             justifyContent: "space-between",
-            gap: 3,
-            mb: 4,
+            gap: 4,
+            mb: 5,
           }}
         >
           {/* טופס */}
@@ -78,32 +156,34 @@ function SiteDetails() {
               display: "flex",
               flexDirection: "column",
               gap: 2,
-              width: { xs: "100%", md: "60%" },
+              width: "100%",
               maxWidth: 500,
             }}
             noValidate
             autoComplete="off"
           >
-            <FormControl fullWidth variant="outlined">
+            <FormControl fullWidth>
               <InputLabel id="project-step-label">שלב בפרויקט</InputLabel>
               <Select
                 labelId="project-step-label"
-                value={step}
+                value={siteStageFormData.stageId || ""}
+                name="stageId"
                 label="שלב בפרויקט"
-                onChange={(e) => setStep(e.target.value)}
+                onChange={handleSelectChange}
               >
-                <MenuItem value="חפירה">חפירה</MenuItem>
-                <MenuItem value="יסודות">יסודות</MenuItem>
-                <MenuItem value="שלד">שלד</MenuItem>
-                <MenuItem value="גמרים">גמרים</MenuItem>
-                <MenuItem value="סיום">סיום</MenuItem>
+                {listAllStages?.map((stage) => (
+                  <MenuItem key={stage.id} value={stage.id}>
+                    {stage.name}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
             <TextField
               label="הערות"
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
+              value={siteStageFormData.notes}
+              name="notes"
+              onChange={handleChange}
               fullWidth
               multiline
               rows={3}
@@ -111,36 +191,38 @@ function SiteDetails() {
 
             <TextField
               label="קישור לתמונה"
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
+              value={siteStageFormData.imageUrl}
+              name="imageUrl"
+              onChange={handleChange}
               fullWidth
             />
 
-            <Button
-              variant="contained"
-              onClick={handleAddUpdate}
-              sx={{ mt: 1 }}
-            >
+            <Button variant="contained" onClick={handleAddUpdate}>
               הוסף עדכון
             </Button>
           </Box>
 
-          {/* תמונה + מיקום */}
+          {/* כרטיס אתר */}
           <Card
             sx={{
-              width: { xs: "100%", sm: "80%", md: 360 },
+              width: { xs: "100%", md: 360 },
+              flexShrink: 0,
               alignSelf: "flex-start",
             }}
           >
             <CardMedia
               component="img"
               height="200"
-              image={site.imageUrl || "/placeholder.png"}
+              image={
+                currentSite?.imageUrl && currentSite.imageUrl.startsWith("http")
+                  ? currentSite.imageUrl
+                  : defultImage
+              }
               alt="תמונת אתר"
             />
             <CardContent>
               <Typography variant="subtitle1" color="text.secondary">
-                מיקום: {site.desc}
+                מיקום: {currentSite?.address}
               </Typography>
             </CardContent>
           </Card>
@@ -172,29 +254,42 @@ function SiteDetails() {
             },
           }}
         >
-          {updates.map((u, i) => (
-            <Card key={i} sx={{ p: 2, backgroundColor: "#f9f9f9" }}>
-              <Typography variant="subtitle1" fontWeight={600}>
-                שלב: {u.step}
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                {u.note}
-              </Typography>
-              {u.imageUrl && (
-                <Box
-                  component="img"
-                  src={u.imageUrl}
-                  alt={`עדכון ${i}`}
-                  sx={{
-                    maxWidth: "100%",
-                    borderRadius: 2,
-                    mt: 1,
-                    boxShadow: 1,
-                  }}
-                />
-              )}
-            </Card>
-          ))}
+          {filteredSiteStages.length == 0 ? (
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              textAlign="center"
+            >
+              לא קיימים שלבים לאתר זה.
+            </Typography>
+          ) : (
+            filteredSiteStages?.map((sStage, id) => (
+              <Card
+                key={id}
+                sx={{ p: 2, backgroundColor: "#f9f9f9", width: 600 }}
+              >
+                <Typography variant="subtitle1" fontWeight={600}>
+                  שלב: {sStage.stageName}
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  {sStage.notes}
+                </Typography>
+                {sStage.imageUrl && (
+                  <Box
+                    component="img"
+                    src={sStage.imageUrl}
+                    alt={`עדכון ${id}`}
+                    sx={{
+                      width: "100%",
+                      borderRadius: 2,
+                      mt: 1,
+                      boxShadow: 1,
+                    }}
+                  />
+                )}
+              </Card>
+            ))
+          )}
         </Box>
       </Container>
     </>

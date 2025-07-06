@@ -8,7 +8,8 @@ import workHoursRouter from "./workHourRouter";
 const router = Router();
 
 router.use("/sites", sitesRouter);
-router.use("/sites/:id/siteStages", siteStageRouter);
+//router.use("/siteStages", siteStageRouter);
+router.use("/site/:id/siteStages", siteStageRouter);
 router.use("/stages", stageRouter);
 router.use("/employees", employeeRouter);
 router.use("/work-hours", workHoursRouter);

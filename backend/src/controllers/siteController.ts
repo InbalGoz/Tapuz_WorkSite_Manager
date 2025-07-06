@@ -30,7 +30,7 @@ export async function getSite(req: Request, res: Response) {
 
 export async function createSiteController(req: Request, res: Response) {
   try {
-    const newSite = await createSite(req.body);
+    const newSite = await createSite(req.body); //מצפה לקבל מידע מגוף הבקשה
     ResService.handleSuccess(res, newSite);
   } catch (err: any) {
     ResService.handleErr(res, err);
@@ -38,7 +38,7 @@ export async function createSiteController(req: Request, res: Response) {
 }
 
 export async function updateSiteController(req: Request, res: Response) {
-  const id = Number(req.params.id);
+  const id = Number(req.params.id); //
   try {
     const updatedSite = await updateSite(id, req.body);
     ResService.handleSuccess(res, updatedSite);

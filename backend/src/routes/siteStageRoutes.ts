@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  getlistOfSiteStage,
+  getListOfSiteStage,
   createSiteStageController,
   updateSiteStageController,
   deleteSiteStageController,
@@ -8,9 +8,11 @@ import {
 
 const router = Router({ mergeParams: true }); //allow to get the second parmater also
 
-router.get("/", getlistOfSiteStage);
+router.get("/", getListOfSiteStage);
 router.post("/", createSiteStageController);
-router.put("/:siteStageId", updateSiteStageController);
-router.delete("/:siteStageId", deleteSiteStageController);
+router.put("/", updateSiteStageController);
+router.delete("/", deleteSiteStageController); // get the sitestageid in tge body
+//router.put("/:siteStageId", updateSiteStageController);
+//router.delete("/:siteStageId", deleteSiteStageController);
 
 export default router;

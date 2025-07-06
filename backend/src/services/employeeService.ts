@@ -46,7 +46,7 @@ export async function createEmployee(data: Employee): Promise<Employee> {
     phoneNumber,
   } = data;
   const sql = `
-    INSERT INTO employees (firstName, lastName, idNumber, visaNumber, hasVisa, hasVehicle, phoneNumber)
+    INSERT INTO employees (firstName, lastName, idNumber, visaNumber, hasVisa, hasVehicle, phoneNumber, created_at)
     VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
     RETURNING 
       id,

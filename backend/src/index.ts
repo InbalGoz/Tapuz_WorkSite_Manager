@@ -30,6 +30,8 @@ async function server() {
       credentials: true, // אם את שולחת עוגיות או auth
     })
   );*/
+  console.log("hii");
+
   app.use(mainRouter); //defines the routes
 
   app.listen(PORT, () => {
