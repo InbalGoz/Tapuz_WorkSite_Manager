@@ -18,7 +18,7 @@ const initialState: StagesState = {
 };
 
 export const loadAllStages = createAsyncThunk(
-  "sites/getAllStages",
+  "stages/getAllStages",
   async () => {
     const stages = await fetchAllStages();
     return stages;

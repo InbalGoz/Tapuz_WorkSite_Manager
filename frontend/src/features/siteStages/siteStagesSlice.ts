@@ -23,7 +23,7 @@ const initialState: SiteStageState = {
 };
 
 export const loadAllSiteStages = createAsyncThunk(
-  "sites/getAllSiteStages",
+  "siteStages/getAllSiteStages",
   async (siteId: number) => {
     const sites = await fetchAllSiteStage(siteId);
     return sites; // TypeScript יגדיר את payload כ־Site[] אוטומטית
@@ -31,7 +31,7 @@ export const loadAllSiteStages = createAsyncThunk(
 );
 
 export const createNewSiteStage = createAsyncThunk(
-  "sites/createNewSiteStage",
+  "siteStages/createNewSiteStage",
   async (siteStageData: SiteStage) => {
     const newSiteStage = await createSiteStage(siteStageData);
     return newSiteStage;
@@ -39,7 +39,7 @@ export const createNewSiteStage = createAsyncThunk(
 );
 
 export const updateSiteStageThunk = createAsyncThunk(
-  "sites/updateSiteStage",
+  "siteStages/updateSiteStage",
   async ({
     siteId,
     siteStage,
@@ -55,7 +55,7 @@ export const updateSiteStageThunk = createAsyncThunk(
 );
 
 export const deleteSiteStageThunk = createAsyncThunk(
-  "sites/deleteSiteStage",
+  "siteStages/deleteSiteStage",
   async ({ siteId, siteStageId }: { siteId: number; siteStageId: number }) => {
     const deletedSite = await deleteSiteStage(siteId, siteStageId);
     return deletedSite;
