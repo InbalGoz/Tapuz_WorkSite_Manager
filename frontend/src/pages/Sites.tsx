@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import SitesList from "../components/SitesList";
+import SitesList from "../components/sites/SitesList";
 import TopBar from "../components/TopBar";
 import { Container, Typography, Box } from "@mui/material";
-import SiteCard from "../components/SiteCard";
-import NewSiteForm from "../components/NewSiteForm";
+import SiteCard from "../components/sites/SiteCard";
+import NewSiteForm from "../components/sites/NewSiteForm";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import { loadAllSites } from "../features/sites/sitesSlice";
 import {
@@ -13,7 +13,6 @@ import {
 } from "../features/sites/sitesSelectors";
 
 function Sites() {
-  //const sites = useAppSelector(selectAllSites);
   const activeSites = useAppSelector(selectActiveSites);
   const finishedSites = useAppSelector(selectFinishedSites);
   const dispatch = useAppDispatch();
@@ -24,16 +23,6 @@ function Sites() {
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  //console.log("activeSites", activeSites);
-  //console.log("sites:", activeSites);
-  /*activeSites.forEach((site) => {
-    console.log(
-      `id: ${site.id}, isFinished:`,
-      site.isFinished,
-      typeof site.isFinished
-    );
-  });*/
-  //console.log("notActiveSites", finishedSites);
   return (
     <>
       <TopBar />

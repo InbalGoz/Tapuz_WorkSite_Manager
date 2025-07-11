@@ -4,8 +4,8 @@ import { getAllStages } from "../services/stageService";
 
 export async function getlistOfStages(req: Request, res: Response) {
   try {
-    const sites = await getAllStages();
-    ResService.handleSuccess(res, sites);
+    const stages = await getAllStages();
+    ResService.handleSuccess(res, stages);
   } catch (err: any) {
     ResService.handleErr(res, err);
   }

@@ -4,5 +4,6 @@ export interface SiteStage {
   stageId: number;
   notes: string | null;
   imageUrl: string;
+  statusId: number;
   createdAt: Date;
 }

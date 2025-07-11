@@ -10,14 +10,14 @@ import {
 import { useNavigate } from "react-router-dom";
 import siteImage from "../assets/defultSite.avif";
 import AddIcon from "@mui/icons-material/Add";
-import type { Site } from "../models/site";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { deleteSiteThunk } from "../features/sites/sitesSlice";
+import type { Site } from "../../models/site";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { deleteSiteThunk } from "../../features/sites/sitesSlice";
 import {
   showConfirmDelete,
   showSuccessAlert,
   showErrorAlert,
-} from "../features/alert/alertService";
+} from "../../features/alert/alertService";
 
 // 2. נגדיר את הפרופס של הקומפוננטה באמצעות הממשק Site
 interface SiteCardProps {

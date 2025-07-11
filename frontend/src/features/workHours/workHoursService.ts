@@ -40,7 +40,7 @@ export async function updateWorkHour(
   workHoursId: number,
   workHourData: WorkHours
 ): Promise<WorkHours> {
-  const response: Res = await axios.post(`${BASE_URL}`, workHourData, {
+  const response: Res = await axios.put(`${BASE_URL}`, workHourData, {
     params: { workHoursId },
   });
   // const response: Res = await axios.put(`${BASE_URL}/${workHoursId}`, workHourData); //send data to the body of the req

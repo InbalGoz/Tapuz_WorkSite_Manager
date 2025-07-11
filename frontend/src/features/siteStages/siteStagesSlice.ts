@@ -41,15 +41,19 @@ export const createNewSiteStage = createAsyncThunk(
 export const updateSiteStageThunk = createAsyncThunk(
   "siteStages/updateSiteStage",
   async ({
-    siteId,
-    siteStage,
-    siteData,
+    // siteId,
+    // siteStageId,
+    siteStageData,
   }: {
-    siteId: number;
-    siteStage: number;
-    siteData: SiteStage;
+    // siteId: number;
+    // siteStageId: number;
+    siteStageData: SiteStage;
   }) => {
-    const updatedSite = await updateSiteStage(siteId, siteStage, siteData);
+    const updatedSite = await updateSiteStage(
+      // siteId,
+      // siteStageId,
+      siteStageData
+    );
     return updatedSite;
   }
 );
@@ -57,6 +61,7 @@ export const updateSiteStageThunk = createAsyncThunk(
 export const deleteSiteStageThunk = createAsyncThunk(
   "siteStages/deleteSiteStage",
   async ({ siteId, siteStageId }: { siteId: number; siteStageId: number }) => {
+    console.log("hekkp del slice");
     const deletedSite = await deleteSiteStage(siteId, siteStageId);
     return deletedSite;
   }

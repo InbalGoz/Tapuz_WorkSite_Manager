@@ -11,7 +11,7 @@ const router = Router({ mergeParams: true }); //allow to get the second parmater
 router.get("/", getListOfSiteStage);
 router.post("/", createSiteStageController);
 router.put("/", updateSiteStageController);
-router.delete("/", deleteSiteStageController); // get the sitestageid in tge body
+router.delete("/:siteStageId", deleteSiteStageController); // get the sitestageid in tge body
 //router.put("/:siteStageId", updateSiteStageController);
 //router.delete("/:siteStageId", deleteSiteStageController);
 

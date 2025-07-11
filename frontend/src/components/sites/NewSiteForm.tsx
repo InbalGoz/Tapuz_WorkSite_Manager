@@ -13,9 +13,9 @@ import {
   Checkbox,
 } from "@mui/material";
 import { useState, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { createNewSite } from "../features/sites/sitesSlice";
-import type { Site } from "../models/site";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { createNewSite } from "../../features/sites/sitesSlice";
+import type { Site } from "../../models/site";
 import { Snackbar, Alert } from "@mui/material";
 
 type Props = {

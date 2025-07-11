@@ -22,6 +22,8 @@ import { useParams } from "react-router-dom";
 import TopBar from "../components/TopBar";
 import { loadAllStages } from "../features/stages/stageSlice";
 import { selectAllStages } from "../features/stages/stageSelector";
+import { loadAllStageStatuses } from "../features/stageStatuses/stageStatusesSlice";
+import { selectAllStageStatuses } from "../features/stageStatuses/stageStatusesSelector";
 import {
   selectAllSitesStages,
   selectSiteStagesBySiteId,
@@ -35,14 +37,12 @@ import {
 import type { SiteStage } from "../models/siteStage";
 import { Snackbar, Alert } from "@mui/material";
 import defultImage from "../assets/defultSite.avif";
+import SiteStagesList from "../components/siteStages/SiteStagesList";
+import NewSiteStageForm from "../components/siteStages/NewSiteStageForm";
 
-const site = {
-  id: 1,
-  name: "אתר בנייה א׳",
-  desc: "רחוב הדגמה 10, תל אביב",
-  imageUrl: "",
-  isFinish: true,
-};
+//defult imageurl
+const placeHolderPic =
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuwnD_48Q_PuHtGT2ZXtOVuFl4dn8tpe1VHg&s";
 
 function SiteDetails() {
   const [snackbar, setSnackbar] = useState<{
@@ -57,34 +57,47 @@ function SiteDetails() {
   const showSnackbar = (message: string, severity: "success" | "error") => {
     setSnackbar({ open: true, message, severity });
   };
+
   const { id } = useParams<{ id: string }>();
   const numericSiteId = Number(id);
+  const [siteStageFormData, setSiteStageFormData] = useState({
+    siteId: numericSiteId,
+    stageId: 0,
+    statusId: 0,
+    notes: "",
+    imageUrl: "",
+  });
   const dispatch = useAppDispatch();
   const currentSite = useAppSelector(selectSelectedSite);
   const listAllStages = useAppSelector(selectAllStages);
-  //1.4 get the stages but with a filter by id
+  const listAllStatuses = useAppSelector(selectAllStageStatuses);
   const filteredSiteStages = useAppSelector(
     selectSiteStagesBySiteId(numericSiteId)
   );
 
-  const [siteStageFormData, setSiteStageFormData] = useState({
-    siteId: numericSiteId,
-    stageId: 0,
-    notes: "",
-    imageUrl: "",
-  });
+  const [selectedStage, setSelectedStage] = useState<SiteStage | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   useEffect(() => {
     dispatch(loadSiteById(numericSiteId));
     dispatch(loadAllStages());
+    dispatch(loadAllStageStatuses());
     dispatch(loadAllSiteStages(numericSiteId));
   }, [dispatch]);
 
-  const handleSelectChange = (e: SelectChangeEvent<number>) => {
+  const handleStageSelectChange = (e: SelectChangeEvent<number>) => {
     const value = Number(e.target.value);
     setSiteStageFormData((prev) => ({
       ...prev,
       stageId: value,
+    }));
+  };
+
+  const handleStatusSelectChange = (e: SelectChangeEvent<number>) => {
+    const value = Number(e.target.value);
+    setSiteStageFormData((prev) => ({
+      ...prev,
+      statusId: value,
     }));
   };
 
@@ -96,7 +109,7 @@ function SiteDetails() {
     }));
   };
 
-  const handleAddUpdate = async (e: React.FormEvent) => {
+  const handleAddSiteStage = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!siteStageFormData.stageId || !siteStageFormData.notes) {
       showSnackbar("נא למלא את כל שדות החובה", "error");
@@ -110,15 +123,74 @@ function SiteDetails() {
       setSiteStageFormData({
         siteId: numericSiteId,
         stageId: 0,
+        statusId: 0,
         notes: "",
         imageUrl: "",
       });
+      await dispatch(loadAllSiteStages(numericSiteId));
     } catch (err: any) {
-      showSnackbar("אירעה שגיאה בהוספת השלב", "error");
+      const errorMessage =
+        err?.message?.includes("duplicate key") ||
+        err?.message?.includes("already exists")
+          ? "שלב זה כבר קיים באתר ולא ניתן להוסיפו שוב."
+          : "אירעה שגיאה בהוספת השלב";
+
+      showSnackbar(errorMessage, "error");
+      //showSnackbar("אירעה שגיאה בהוספת השלב", "error");
     }
   };
 
-  //maxWidth="lg"
+  //handle site stages list
+  const handleEditClick = (siteStage: SiteStage) => {
+    setSelectedStage(siteStage); // כאן נבחר השלב!
+    setEditDialogOpen(true); // נפתח הדיאלוג
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedStage(null);
+    setEditDialogOpen(false);
+  };
+
+  const handleSaveUpdatedStage = async (updatedData: Partial<SiteStage>) => {
+    if (!selectedStage) return;
+    const updatedSiteStage = { ...selectedStage, ...updatedData };
+
+    console.log("updates sitestage", updatedSiteStage);
+
+    try {
+      await dispatch(
+        updateSiteStageThunk({
+          siteStageData: updatedSiteStage,
+        })
+      ).unwrap();
+      dispatch(loadAllSiteStages(numericSiteId)); // רענון רשימה
+      showSnackbar("עודכן בהצלחה", "success");
+    } catch {
+      showSnackbar("שגיאה בעדכון", "error");
+    } finally {
+      setEditDialogOpen(false);
+      setSelectedStage(null);
+    }
+  };
+
+  const handlesSiteStageDelete = async (siteStageId: number) => {
+    try {
+      console.log("hekkp del");
+      await dispatch(
+        deleteSiteStageThunk({
+          siteId: numericSiteId,
+          siteStageId: siteStageId,
+        })
+      ).unwrap();
+      showSnackbar("נמחק בהצלחה", "success");
+      dispatch(loadAllSiteStages(numericSiteId));
+    } catch {
+      showSnackbar("שגיאה במחיקה", "error");
+    }
+  };
+
+  console.log("filtersitebyid", filteredSiteStages);
+
   return (
     <>
       <TopBar />
@@ -169,11 +241,28 @@ function SiteDetails() {
                 value={siteStageFormData.stageId || ""}
                 name="stageId"
                 label="שלב בפרויקט"
-                onChange={handleSelectChange}
+                onChange={handleStageSelectChange}
               >
                 {listAllStages?.map((stage) => (
                   <MenuItem key={stage.id} value={stage.id}>
                     {stage.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            <FormControl fullWidth>
+              <InputLabel id="project-status-label">סטטוס שלב</InputLabel>
+              <Select
+                labelId="project-status-label"
+                value={siteStageFormData.statusId || ""}
+                name="statusId"
+                label="סטטוס שלב"
+                onChange={handleStatusSelectChange}
+              >
+                {listAllStatuses?.map((stageSatatus) => (
+                  <MenuItem key={stageSatatus.id} value={stageSatatus.id}>
+                    {stageSatatus.statusName}
                   </MenuItem>
                 ))}
               </Select>
@@ -191,13 +280,13 @@ function SiteDetails() {
 
             <TextField
               label="קישור לתמונה"
-              value={siteStageFormData.imageUrl}
+              value={siteStageFormData.imageUrl || ""}
               name="imageUrl"
               onChange={handleChange}
               fullWidth
             />
 
-            <Button variant="contained" onClick={handleAddUpdate}>
+            <Button variant="contained" onClick={handleAddSiteStage}>
               הוסף עדכון
             </Button>
           </Box>
@@ -242,56 +331,40 @@ function SiteDetails() {
           עדכונים שבוצעו
         </Typography>
 
-        {/* רשימת עדכונים */}
-        <Box
-          sx={{
-            display: "grid",
-            gap: 2,
-            gridTemplateColumns: {
-              xs: "1fr",
-              sm: "1fr 1fr",
-              md: "1fr 1fr 1fr",
-            },
-          }}
-        >
-          {filteredSiteStages.length == 0 ? (
-            <Typography
-              variant="body1"
-              color="text.secondary"
-              textAlign="center"
-            >
-              לא קיימים שלבים לאתר זה.
-            </Typography>
-          ) : (
-            filteredSiteStages?.map((sStage, id) => (
-              <Card
-                key={id}
-                sx={{ p: 2, backgroundColor: "#f9f9f9", width: 600 }}
-              >
-                <Typography variant="subtitle1" fontWeight={600}>
-                  שלב: {sStage.stageName}
-                </Typography>
-                <Typography variant="body2" sx={{ mb: 1 }}>
-                  {sStage.notes}
-                </Typography>
-                {sStage.imageUrl && (
-                  <Box
-                    component="img"
-                    src={sStage.imageUrl}
-                    alt={`עדכון ${id}`}
-                    sx={{
-                      width: "100%",
-                      borderRadius: 2,
-                      mt: 1,
-                      boxShadow: 1,
-                    }}
-                  />
-                )}
-              </Card>
-            ))
-          )}
-        </Box>
+        {/* רשימת שלבים */}
+        <SiteStagesList
+          siteStages={filteredSiteStages}
+          onOpenDialog={handleEditClick}
+          onCloseDialog={handleCloseDialog}
+          handelStageUpdate={handleSaveUpdatedStage}
+          handleStageDelete={handlesSiteStageDelete}
+        />
+        {selectedStage && (
+          <NewSiteStageForm
+            open={editDialogOpen}
+            onClose={handleCloseDialog}
+            curSiteStage={selectedStage}
+            statuses={listAllStatuses}
+            onSave={handleSaveUpdatedStage}
+          />
+        )}
+        {/* רשימת חומרים להוסיף */}
       </Container>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          severity={snackbar.severity}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

@@ -28,9 +28,9 @@ export async function createSiteStageController(req: Request, res: Response) {
 }
 
 export async function updateSiteStageController(req: Request, res: Response) {
-  const siteStageId = Number(req.params.siteStageId);
+  const { id } = req.body;
   try {
-    const updatedSiteStage = await updateSiteStage(siteStageId, req.body);
+    const updatedSiteStage = await updateSiteStage(id, req.body);
     ResService.handleSuccess(res, updatedSiteStage);
   } catch (err: any) {
     ResService.handleErr(res, err);
@@ -38,9 +38,12 @@ export async function updateSiteStageController(req: Request, res: Response) {
 }
 
 export async function deleteSiteStageController(req: Request, res: Response) {
-  const siteStageId = Number(req.params.siteStageId);
+  //const siteStageId = Number(req.params.siteStageId);
+  const { siteStageId } = req.params;
+  const numericSiteStageId = Number(siteStageId);
+  console.log("deletedid", numericSiteStageId);
   try {
-    const deletedSiteStage = await deleteSiteStage(siteStageId);
+    const deletedSiteStage = await deleteSiteStage(numericSiteStageId);
     ResService.handleSuccess(res, deletedSiteStage);
   } catch (err: any) {
     ResService.handleErr(res, err);

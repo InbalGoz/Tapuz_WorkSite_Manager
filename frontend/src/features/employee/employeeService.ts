@@ -36,7 +36,7 @@ export async function updateEmployee(
   employeeId: number,
   employeeData: Employee
 ): Promise<Employee> {
-  const response: Res = await axios.post(`${BASE_URL}`, employeeData, {
+  const response: Res = await axios.put(`${BASE_URL}`, employeeData, {
     params: { employeeId },
   });
   return response.data.success

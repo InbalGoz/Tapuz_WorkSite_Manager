@@ -1,5 +1,5 @@
 import { Container, Typography, Box, Card } from "@mui/material";
-import SiteCard from "./SiteCard";
+import SiteCard from "./sites/SiteCard";
 import type { Site } from "../models/site"; //כשמייבאים טיפוסים צריך להגיד שזה TYPE
 //import siteImage from "../assets/defultSite.avif";
 
