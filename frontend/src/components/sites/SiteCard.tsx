@@ -8,7 +8,7 @@ import {
   Box,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import siteImage from "../assets/defultSite.avif";
+import siteImage from "../../assets/defultSite.avif";
 import AddIcon from "@mui/icons-material/Add";
 import type { Site } from "../../models/site";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";

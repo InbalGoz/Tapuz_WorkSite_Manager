@@ -10,6 +10,9 @@ export interface WorkHours {
   notes: string;
   siteId: number;
   createdAt: Date;
+  emFirstName: string;
+  emLastName: string;
+  siteName: string;
 }
 
 export interface WorkHoursFilter {

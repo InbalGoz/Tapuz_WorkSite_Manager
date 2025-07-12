@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { WorkHours } from "../../models/workHours";
+import type { WorkHours, NewWorkHour } from "../../models/workHours";
 import {
   fetchAllWorkHours,
   fetchFilteredWorkHours,
@@ -53,7 +53,7 @@ export const loadAllFilteredWorkHours = createAsyncThunk(
 
 export const createNewWorkHourThunk = createAsyncThunk(
   "workHours/createNewWorkHour",
-  async (workHoursData: WorkHours) => {
+  async (workHoursData: NewWorkHour) => {
     const newWorkHours = await createWorkHour(workHoursData);
     return newWorkHours;
   }

@@ -2,18 +2,23 @@ import { DBService } from "./dbService";
 import { WorkHours, WorkHoursFilter } from "../entities/workHours";
 
 const sqlBaseQuery = `SELECT 
-    id, 
-    employee_id AS "employeeId", 
-    work_date AS "workDate", 
-    paid_by_meter AS "isPaidByMeter", 
-    hours_worked AS "totalHoursWorked",
-    meter_worked AS "metersWorked",
-    start_time AS "startTime",
-    end_time AS "endTime",
-    notes,
-    site_id AS "siteId"
-    created_at AS "createdAt"
-    FROM work_hours`;
+    wh.id, 
+    wh.employee_id AS "employeeId", 
+    wh.work_date AS "workDate", 
+    wh.paid_by_meter AS "isPaidByMeter", 
+    wh.hours_worked AS "totalHoursWorked",
+    wh.meters_worked AS "metersWorked",
+    wh.start_time AS "startTime",
+    wh.end_time AS "endTime",
+    wh.notes,
+    wh.site_id AS "siteId",
+    wh.created_at AS "createdAt",
+    em.first_name AS "emFirstName",
+    em.last_name AS "emLastName",
+    st.name AS "siteName"
+    FROM work_hours wh
+    JOIN employees em ON em.id = wh.employee_id  
+    JOIN sites st ON st.id = wh.site_id`;
 
 export async function getAllWorkHours(): Promise<WorkHours[]> {
   const sqlQuery = sqlBaseQuery;
@@ -74,21 +79,23 @@ export async function createWorkHour(data: WorkHours): Promise<WorkHours> {
     notes,
     siteId,
   } = data;
+
+  //ADD total work hourcalc
   const sql = `
-    INSERT INTO work_hours (employee_id, work_date, paid_by_meter, hours_worked, meter_worked, start_time,
-    end_time, notes, site_id, NOW())
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    INSERT INTO work_hours (employee_id, work_date, paid_by_meter, hours_worked, meters_worked, start_time,
+    end_time, notes, site_id, created_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())
     RETURNING 
     id, 
     employee_id AS "employeeId", 
     work_date AS "workDate", 
     paid_by_meter AS "isPaidByMeter", 
     hours_worked AS "totalHoursWorked",
-    meter_worked AS "metersWorked",
+    meters_worked AS "metersWorked",
     start_time AS "startTime",
     end_time AS "endTime",
     notes,
-    site_id AS "siteId"
+    site_id AS "siteId",
     created_at AS "createdAt"
   `;
 
@@ -131,7 +138,7 @@ export async function updateWorkHour(
 
   const sql = `
       UPDATE work_hours
-      SET employee_id = $1, work_date = $2, paid_by_meter = $3, hours_worked = $4, meter_worked = $5
+      SET employee_id = $1, work_date = $2, paid_by_meter = $3, hours_worked = $4, meters_worked = $5
       start_time = $6, end_time = $7, notes= $8, site_id = $9
       WHERE id = $7
       RETURNING 
@@ -140,7 +147,7 @@ export async function updateWorkHour(
     work_date AS "workDate", 
     paid_by_meter AS "isPaidByMeter", 
     hours_worked AS "totalHoursWorked",
-    meter_worked AS "metersWorked",
+    meters_worked AS "metersWorked",
     start_time AS "startTime",
     end_time AS "endTime",
     notes,

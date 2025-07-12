@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { WorkHours } from "../../models/workHours";
+import type { WorkHours, NewWorkHour } from "../../models/workHours";
 //import devConfig from "../../env/dev";
 import type { Res } from "../../models/res";
 
@@ -27,7 +27,7 @@ export async function fetchFilteredWorkHours(
 }
 
 export async function createWorkHour(
-  workHourData: WorkHours
+  workHourData: NewWorkHour
 ): Promise<WorkHours> {
   const response: Res = await axios.post(`${BASE_URL}`, workHourData); //send data to the body of the req
   console.log(response.data.success);

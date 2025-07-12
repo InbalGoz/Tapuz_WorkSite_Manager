@@ -5,18 +5,18 @@ import Sites from "./pages/Sites";
 import { Route, Routes } from "react-router-dom";
 //import Register from "./pages/auth/Register";
 //import Dashboard from "./pages/Dashboard";
-//import SitesList from "./pages/SitesList";
 import SiteDetails from "./pages/SiteDetails";
 //import TopBar from "./components/TopBar";
 import WorkHours from "./pages/WorkHours";
 import LandingPage from "./pages/LandingPage";
-//import NewSite from "./pages/NewSite";
+import SnackbarAlerts from "./components/snackbarAlerts";
 
 const App: React.FC = () => {
   //const token = localStorage.getItem("token");
 
   return (
     <>
+      <SnackbarAlerts />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/sites" element={<Sites />} />

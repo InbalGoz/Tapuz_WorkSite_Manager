@@ -1,30 +1,75 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  Select,
-  MenuItem,
-  Button,
-  Card,
-  CardContent,
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Button, Typography, Card, Box } from "@mui/material";
 import TopBar from "../components/TopBar";
+import WorkHoursList from "../components/workHours/workHoursList";
+import NewWorkHoursForm from "../components/workHours/newWorkHoursForm";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import {
+  loadAllWorkHours,
+  loadAllFilteredWorkHours,
+  createNewWorkHourThunk,
+} from "../features/workHours/workHoursSlice";
+import {
+  selectAllWorkHours,
+  selectAllFilterWorkHours,
+} from "../features/workHours/workHoursSelector";
 
-type Employee = { id: number; name: string };
-type Site = { id: number; name: string };
-type TimeEntry = {
-  employeeId: number;
-  siteId: number;
-  startTime: string; // HH:MM
-  endTime: string; // HH:MM
-  date: string; // YYYY-MM-DD
-};
+function WorkHoursPage() {
+  const dispatch = useAppDispatch();
+  const [showForm, setShowForm] = useState(false);
+  const allWorkHours = useAppSelector(selectAllWorkHours);
+  const filteredWorkHours = useAppSelector(selectAllFilterWorkHours);
 
-export default function TimesheetPage() {
-  const [employees] = useState<Employee[]>([
+  const toggleForm = () => {
+    setShowForm((prev) => !prev);
+  };
+
+  useEffect(() => {
+    dispatch(loadAllWorkHours());
+  }, [dispatch]);
+
+  return (
+    <>
+      <TopBar></TopBar>
+      <Box sx={{ p: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          דיווחי שעות
+        </Typography>
+        <Box sx={{ mt: 4 }}>
+          <Button variant="contained" onClick={toggleForm}>
+            {showForm ? "סגור טופס" : "הוסף דיווח חדש"}
+          </Button>
+
+          {showForm && (
+            <Box sx={{ mt: 3 }}>
+              <NewWorkHoursForm />
+            </Box>
+          )}
+
+          {/* כאן תוכל לשים את רשימת הדיווחים / סינון */}
+        </Box>
+
+        <Card sx={{ p: 3, mb: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            טבלת דיווח שעות עבודה
+          </Typography>
+        </Card>
+
+        {/* צריך להבין אם היה פילטר או לא קומפוננטת רשימת דיווחי שעות */}
+
+        <Box>
+          <WorkHoursList
+            workHoursList={allWorkHours}
+            filteredWorkHoursList={[]}
+          />
+          {/* כאן תכניסי את הקומפוננטה שלך */}
+        </Box>
+      </Box>
+    </>
+  );
+}
+export default WorkHoursPage;
+/* const [employees] = useState<Employee[]>([
     { id: 1, name: "אבי כהן" },
     { id: 2, name: "דנה לוי" },
   ]);
@@ -68,19 +113,15 @@ export default function TimesheetPage() {
     setEndTime("17:00");
   };
 
-  const todaysEntries = entries.filter((e) => e.date === date);
-
-  return (
-    <>
-      <TopBar></TopBar>
-
-      <Box sx={{ mt: 6, px: 4, direction: "rtl" }}>
+  const todaysEntries = entries.filter((e) => e.date === date);*/
+/*
+<Box sx={{ mt: 6, px: 4, direction: "rtl" }}>
         <Typography variant="h4" sx={{ mb: 4, textAlign: "left" }}>
           דיווחי שעות
         </Typography>
 
-        {/* ======== טופס דיווח בצד ימין ======== */}
-        <Box
+        /* ======== טופס דיווח בצד ימין ======== */
+/* <Box
           sx={{
             display: "flex",
             justifyContent: "flex-end",
@@ -101,8 +142,8 @@ export default function TimesheetPage() {
               },
             }}
           >
-            {/* עובד */}
-            <FormControl variant="outlined" fullWidth>
+            /* עובד */
+/* <FormControl variant="outlined" fullWidth>
               <InputLabel id="emp-label">עובד</InputLabel>
               <Select
                 labelId="emp-label"
@@ -118,8 +159,8 @@ export default function TimesheetPage() {
               </Select>
             </FormControl>
 
-            {/* אתר */}
-            <FormControl variant="outlined" fullWidth>
+            /* אתר */
+/*<FormControl variant="outlined" fullWidth>
               <InputLabel id="site-label">אתר</InputLabel>
               <Select
                 labelId="site-label"
@@ -134,8 +175,8 @@ export default function TimesheetPage() {
                 ))}
               </Select>
             </FormControl>
-            {/* תאריך */}
-            <FormControl variant="outlined">
+            /* תאריך */
+/*<FormControl variant="outlined">
               <InputLabel htmlFor="date">תאריך</InputLabel>
               <OutlinedInput
                 id="date"
@@ -146,8 +187,8 @@ export default function TimesheetPage() {
               />
             </FormControl>
 
-            {/* שעת סיום */}
-            <FormControl variant="outlined">
+            /* שעת סיום */
+/*<FormControl variant="outlined">
               <InputLabel htmlFor="end-time">סיום</InputLabel>
               <OutlinedInput
                 id="end-time"
@@ -157,8 +198,8 @@ export default function TimesheetPage() {
                 label="סיום"
               />
             </FormControl>
-            {/* שעת התחלה */}
-            <FormControl variant="outlined">
+            /* שעת התחלה */
+/* <FormControl variant="outlined">
               <InputLabel htmlFor="start-time">התחלה</InputLabel>
               <OutlinedInput
                 id="start-time"
@@ -169,8 +210,8 @@ export default function TimesheetPage() {
               />
             </FormControl>
 
-            {/* כפתור הוספה (יתפרס על כל העמודות) */}
-            <Box
+            /* כפתור הוספה (יתפרס על כל העמודות) */
+/* <Box
               sx={{ gridColumn: { xs: "span 1", sm: "span 2", md: "span 3" } }}
             >
               <Button
@@ -185,7 +226,7 @@ export default function TimesheetPage() {
           </Box>
         </Box>
 
-        {/* ======== רשימת דיווחים להיום ======== */}
+        /* ======== רשימת דיווחים להיום ======== *
         <Typography
           variant="h5"
           sx={{ mb: 2, fontWeight: 500, textAlign: "left" }}
@@ -225,6 +266,4 @@ export default function TimesheetPage() {
           )}
         </Box>
       </Box>
-    </>
-  );
-}
+*/
