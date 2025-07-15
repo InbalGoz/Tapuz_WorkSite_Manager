@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 //import { Routes, Route, Navigate } from "react-router-dom";
 //import Login from "./pages/auth/Login";
 import Sites from "./pages/Sites";
@@ -10,17 +10,30 @@ import SiteDetails from "./pages/SiteDetails";
 import WorkHours from "./pages/WorkHours";
 import LandingPage from "./pages/LandingPage";
 import SnackbarAlerts from "./components/snackbarAlerts";
+import EmployeesPage from "./pages/EmployeesPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import LoginPage from "./pages/LoginPage";
 
 const App: React.FC = () => {
   //const token = localStorage.getItem("token");
+  useEffect(() => {
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
 
+    if (token) {
+      //dispatch(restoreSession(token)); // תגדירי thunk שמביא את המשתמש מהשרת לפי הטוקן
+    }
+  }, []);
   return (
     <>
       <SnackbarAlerts />
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
+
         <Route path="/sites" element={<Sites />} />
         <Route path="/site/:id" element={<SiteDetails />} />
+        <Route path="/employees" element={<EmployeesPage />} />
         <Route path="/workhours" element={<WorkHours />} />
       </Routes>
     </>
@@ -30,27 +43,39 @@ const App: React.FC = () => {
 export default App;
 
 /*
-<Routes>
-      <Route path="/login" element={<Login />} />
-      <Route
-        path="/dashboard"
-        element={token ? <Dashboard /> : <Navigate to="/login" replace />}
-      />
-      <Route
+ <Route
         path="/sites"
-        element={token ? <SitesList /> : <Navigate to="/login" replace />}
+        element={
+          <ProtectedRoute>
+            <Sites />
+          </ProtectedRoute>
+        }
       />
+
       <Route
-        path="/sites/new"
-        element={token ? <NewSite /> : <Navigate to="/login" replace />}
+        path="/site/:id"
+        element={
+          <ProtectedRoute>
+            <SiteDetails />
+          </ProtectedRoute>
+        }
       />
+
       <Route
-        path="/sites/:id"
-        element={token ? <SiteDetails /> : <Navigate to="/login" replace />}
+        path="/employees"
+        element={
+          <ProtectedRoute>
+            <EmployeesPage />
+          </ProtectedRoute>
+        }
       />
+
       <Route
-        path="*"
-        element={<Navigate to={token ? "/dashboard" : "/login"} replace />}
+        path="/workhours"
+        element={
+          <ProtectedRoute>
+            <WorkHours />
+          </ProtectedRoute>
+        }
       />
-    </Routes>
 */

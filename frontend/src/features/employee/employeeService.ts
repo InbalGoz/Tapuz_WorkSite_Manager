@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Employee } from "../../models/employee";
+import type { Employee, NewEmployee } from "../../models/employee";
 //import devConfig from "../../env/dev";
 import type { Res } from "../../models/res";
 
@@ -23,7 +23,7 @@ export async function fetchEmployeeById(employeeId: number): Promise<Employee> {
 }
 
 export async function createEmployee(
-  employeeData: Employee
+  employeeData: NewEmployee
 ): Promise<Employee> {
   const response: Res = await axios.post(`${BASE_URL}`, employeeData);
   console.log(response.data.success);

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { Employee } from "../../models/employee";
+import type { Employee, NewEmployee } from "../../models/employee";
 import {
   fetchAllEmployees,
   fetchEmployeeById,
@@ -41,7 +41,7 @@ export const loadAEmployeeById = createAsyncThunk(
 
 export const createNewEmployeeThunk = createAsyncThunk(
   "employees/createNewSiteStage",
-  async (employeeData: Employee) => {
+  async (employeeData: NewEmployee) => {
     const newEmployee = await createEmployee(employeeData);
     return newEmployee;
   }

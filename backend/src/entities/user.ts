@@ -6,3 +6,8 @@ export interface User {
   email: string;
   createdAt: Date;
 }
+
+export interface loginData {
+  username: string;
+  password: string;
+}

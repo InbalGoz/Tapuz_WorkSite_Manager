@@ -10,6 +10,8 @@ const sql = `SELECT
   has_visa AS "hasVisa",
   has_vehicle AS "hasVehicle",
   phone_number AS "phoneNumber",
+  image_url AS "imageUrl",
+  is_height AS "isHeight"
   created_at AS "createdAt"
 FROM employees`;
 
@@ -44,10 +46,12 @@ export async function createEmployee(data: Employee): Promise<Employee> {
     hasVisa,
     hasVehicle,
     phoneNumber,
+    imageUrl,
+    isHeight,
   } = data;
   const sql = `
-    INSERT INTO employees (firstName, lastName, idNumber, visaNumber, hasVisa, hasVehicle, phoneNumber, created_at)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+    INSERT INTO employees (firstName, lastName, idNumber, visaNumber, hasVisa, hasVehicle, phoneNumber, imageUrl, isHeight, created_at)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8,$9, NOW())
     RETURNING 
       id,
   first_name AS "firstName",
@@ -57,6 +61,8 @@ export async function createEmployee(data: Employee): Promise<Employee> {
   has_visa AS "hasVisa",
   has_vehicle AS "hasVehicle",
   phone_number AS "phoneNumber",
+  image_url AS "imageUrl",
+  is_height AS "isHeight",
   created_at AS "createdAt"
   `;
 
@@ -68,6 +74,8 @@ export async function createEmployee(data: Employee): Promise<Employee> {
     hasVisa,
     hasVehicle,
     phoneNumber || null,
+    imageUrl,
+    isHeight,
   ];
 
   try {
@@ -91,11 +99,13 @@ export async function updateEmployee(
     hasVisa,
     hasVehicle,
     phoneNumber,
+    isHeight,
+    imageUrl,
   } = data;
   const sql = `
       UPDATE employees
       SET firstName = $1, lastName = $2, idNumber = $3, visaNumber = $4, hasVisa = $5, hasVehicle = $6, phoneNumber = $7
-      WHERE id = $8
+      imageUrl = $8 isHeight = $9 WHERE id = $10
       RETURNING 
       id,
   first_name AS "firstName",
@@ -105,6 +115,8 @@ export async function updateEmployee(
   has_visa AS "hasVisa",
   has_vehicle AS "hasVehicle",
   phone_number AS "phoneNumber",
+  image_url AS "imageUrl",
+  is_height AS "isHeight",
   created_at AS "createdAt"
     `;
   const values = [
@@ -115,6 +127,7 @@ export async function updateEmployee(
     hasVisa,
     hasVehicle,
     phoneNumber || null,
+    imageUrl,
     id,
   ];
   try {

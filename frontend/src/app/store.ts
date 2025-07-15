@@ -6,6 +6,7 @@ import workHoursReducer from "../features/workHours/workHoursSlice";
 import employeesReducer from "../features/employee/employeeSlice";
 import stageStatusesReducer from "../features/stageStatuses/stageStatusesSlice";
 import snackbarAlertsReducer from "../features/alert/snackbarAlertSlice";
+import authReducer from "../features/auth/authSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     employees: employeesReducer,
     stageStatus: stageStatusesReducer,
     snackbarAlerts: snackbarAlertsReducer,
+    auth: authReducer,
   },
 });
 

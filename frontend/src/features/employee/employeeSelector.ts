@@ -4,8 +4,8 @@ import type { RootState } from "../../app/store";
 export const selectAllEmployees = (state: RootState) =>
   state.employees.all_employees;
 export const selectAllEmployeesLoading = (state: RootState) =>
-  state.employees.all_employees;
+  state.employees.loading;
 export const selectAllEmployeesError = (state: RootState) =>
-  state.employees.all_employees;
+  state.employees.error;
 export const selectSelectedEmployee = (state: RootState) =>
   state.employees.selected_employee;

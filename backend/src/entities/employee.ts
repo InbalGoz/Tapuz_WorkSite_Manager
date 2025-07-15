@@ -7,5 +7,7 @@ export interface Employee {
   hasVisa: boolean;
   hasVehicle: boolean;
   phoneNumber: string | null;
+  imageUrl: string;
+  isHeight: boolean;
   createdAt: Date;
 }
